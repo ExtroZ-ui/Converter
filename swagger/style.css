@@ -1,0 +1,109 @@
+/* Сброс и базовые стили */
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #71b7e6, #9b59b6);
+      color: #333;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* Общий контейнер для контента */
+    .content-wrapper {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header, main, footer {
+      background: #fff;
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      padding: 30px 40px;
+      box-sizing: border-box;
+    }
+
+    header {
+      text-align: center;
+      user-select: none;
+    }
+    header h1 {
+      margin: 0 0 12px 0;
+      font-weight: 700;
+      font-size: 2.4rem;
+      color: #4a4a4a;
+      letter-spacing: 1px;
+    }
+    header p {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    main {
+      min-height: 600px;
+    }
+
+    #swagger-ui {
+      width: 100%;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      user-select: none;
+    }
+
+    /* Кастомизация кнопок и методов Swagger */
+    .swagger-ui .opblock-summary-method {
+      background-color: #6c63ff !important;
+      color: white !important;
+      font-weight: 600;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .swagger-ui .btn.try-out__btn {
+      background-color: #6c63ff !important;
+      border-color: #6c63ff !important;
+      color: white !important;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 6px 16px;
+      transition: background-color 0.3s ease;
+    }
+    .swagger-ui .btn.try-out__btn:hover {
+      background-color: #574fd6 !important;
+      border-color: #574fd6 !important;
+    }
+    .swagger-ui h2, .swagger-ui h3 {
+      color: #4a4a4a;
+      font-weight: 700;
+    }
+
+    /* Адаптив */
+    @media (max-width: 600px) {
+      header, main, footer {
+        padding: 20px 25px;
+      }
+      header h1 {
+        font-size: 1.8rem;
+      }
+      header p {
+        font-size: 1rem;
+      }
+    }

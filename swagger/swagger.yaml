@@ -2,47 +2,150 @@ openapi: 3.0.0
 info:
   title: Currency Converter API
   version: 1.0.0
+  description: |
+    API для конвертации валют. Позволяет получить список поддерживаемых валют и выполнить конвертацию суммы из одной валюты в другую.
+  contact:
+    name: GitHub Currency Converter
+    url: https://github.com/ExtroZ-ui/Converter/tree/master
+
+servers:
+  - url: http://localhost:8000
+    description: Локальный сервер разработки
+
+tags:
+  - name: Currencies
+    description: Работа с валютами
+  - name: Conversion
+    description: Конвертация валют
+
 paths:
   /currencies:
     get:
-      summary: Get supported currencies
+      tags:
+        - Currencies
+      summary: Получить список поддерживаемых валют
+      description: Возвращает массив строк с кодами поддерживаемых валют.
       responses:
         '200':
-          description: A list of supported currencies
+          description: Успешный ответ с массивом валют
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: string
+              example:
+                - USD
+                - EUR
+                - RUB
+                - JPY
+                - GBP
 
   /convert:
     post:
-      summary: Convert amount between currencies
+      tags:
+        - Conversion
+      summary: Конвертация суммы между валютами
+      description: |
+        Выполняет конвертацию указанной суммы из одной валюты в другую по текущему курсу.
+        Необходимо указать валюту источника (`from`), валюту назначения (`to`) и сумму (`amount`).
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - from
+                - to
+                - amount
               properties:
-                from_currency:
+                from:
                   type: string
-                to_currency:
+                  description: Код валюты источника (например, USD)
+                  example: RUB
+                to:
                   type: string
+                  description: Код валюты назначения (например, USD)
+                  example: USD
                 amount:
                   type: number
-              required:
-                - from_currency
-                - to_currency
-                - amount
+                  format: float
+                  description: Сумма для конвертации
+                  example: 100.50
       responses:
         '200':
-          description: Conversion result
+          description: Результат конвертации
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  converted:
+                  result:
                     type: number
+                    description: Конвертированная сумма
+                    example: 1.1
+                  from:
+                    type: string
+                    description: Валюта источника
+                    example: RUB
+                  to:
+                    type: string
+                    description: Валюта назначения
+                    example: USD
+                  amount:
+                    type: number
+                    description: Исходная сумма
+                    example: 100.5
+        '400':
+          description: Ошибка в параметрах запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Некорректные параметры запроса"
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Ошибка на сервере"
+
+components:
+  schemas:
+    CurrencyList:
+      type: array
+      items:
+        type: string
+    ConversionRequest:
+      type: object
+      required:
+        - from_currency
+        - to_currency
+        - amount
+      properties:
+        from_currency:
+          type: string
+          description: Код валюты источника
+        to_currency:
+          type: string
+          description: Код валюты назначения
+        amount:
+          type: number
+          format: float
+          description: Сумма для конвертации
+    ConversionResponse:
+      type: object
+      properties:
+        converted:
+          type: number
+          description: Конвертированная сумма
+        from_currency:
+          type

@@ -6,3 +6,6 @@ class CurrencyConverter:
             raise ValueError("Unsupported currency code.")
         usd = amount / EXCHANGE_RATES[from_currency]
         return usd * EXCHANGE_RATES[to_currency]
+
+    def get_currencies(self):
+        return list(EXCHANGE_RATES.keys())
