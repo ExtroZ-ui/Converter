@@ -39,9 +39,9 @@
 GET /currencies — запрос для получения актуального списка валют, которые поддерживаются сервисом конвертации. Этот список используется для отображения доступных валют в интерфейсах и для проверки корректности параметров при конвертации.
 
 #### Пример запроса /currencies (GET)
--Request URL
-[https://converter-cpgc.onrender.com/currencies](https://converter-cpgc.onrender.com/currencies)  
-[http://localhost:8000/currencies](http://localhost:8000/currencies)
+Request URL
+ - [https://converter-cpgc.onrender.com/currencies](https://converter-cpgc.onrender.com/currencies)  
+ - [http://localhost:8000/currencies](http://localhost:8000/currencies)
 
 #### Пример ответа
 
