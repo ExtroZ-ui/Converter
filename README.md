@@ -40,7 +40,8 @@ GET /currencies — запрос для получения актуальног�
 
 #### Пример запроса /currencies (GET)
 -Request URL
-[https://converter-cpgc.onrender.com/currencies](https://converter-cpgc.onrender.com/currencies)
+[https://converter-cpgc.onrender.com/currencies](https://converter-cpgc.onrender.com/currencies)  
+[http://localhost:8000/currencies](http://localhost:8000/currencies)
 
 #### Пример ответа
 
