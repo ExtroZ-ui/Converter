@@ -140,7 +140,8 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404, f"{file_path} not found.")
 
-def run(server_class=HTTPServer, handler_class=SwaggerRequestHandler, port=8000):
+def run(server_class=HTTPServer, handler_class=SwaggerRequestHandler):
+    port = int(os.environ.get("PORT", 8000))
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print(f"Swagger UI available at http://localhost:{port}/api-docs")
