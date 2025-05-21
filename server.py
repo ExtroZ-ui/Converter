@@ -25,7 +25,7 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
             self._set_cors_headers()
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            file_path = os.path.join(self.BASE_DIR, "swagger", "index.html")
+            file_path = os.path.join(self.BASE_DIR, "docs", "index.html")
             with open(file_path, "r", encoding="utf-8") as f:
                 self.wfile.write(f.read().encode("utf-8"))
 
@@ -34,9 +34,9 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
             self._set_cors_headers()
             self.send_header("Content-type", "text/html")
             self.end_headers()
-            file_path = os.path.join(self.BASE_DIR, "swagger", "swagger_ui.html")
+            file_path = os.path.join(self.BASE_DIR, "docs", "swagger_ui.html")
             with open(file_path, "r", encoding="utf-8") as f:
-                html = f.read().replace("{{spec_url}}", "/swagger/swagger.yaml")
+                html = f.read().replace("{{spec_url}}", "/docs/swagger.yaml")
                 self.wfile.write(html.encode("utf-8"))
 
         elif path == "/currencies":
@@ -49,10 +49,10 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(currencies).encode("utf-8"))
 
         elif path == "/favicon.ico":
-            file_path = os.path.join(self.BASE_DIR, "swagger", "favicon.ico")
+            file_path = os.path.join(self.BASE_DIR, "docs", "favicon.ico")
             self._serve_file(file_path, content_type="image/x-icon")
 
-        elif path.startswith("/swagger/"):
+        elif path.startswith("/docs/"):
             file_path = os.path.join(self.BASE_DIR, path.lstrip("/"))
             if os.path.exists(file_path) and os.path.isfile(file_path):
                 self.send_response(200)
