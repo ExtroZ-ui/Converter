@@ -20,7 +20,7 @@
 2. Запустите сервер:
    
     ```bash
-   python app.py
+   python server.py
 
 3.Откройте в браузере:
 
