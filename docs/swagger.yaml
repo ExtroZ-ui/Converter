@@ -11,6 +11,8 @@ info:
 servers:
   - url: http://localhost:8000
     description: Локальный сервер разработки
+  - url: https://converter-cpgc.onrender.com
+    description: Локальный сервер разработки
 
 tags:
   - name: Currencies
