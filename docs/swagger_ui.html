@@ -5,7 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Currency Converter API</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css" />
-  <link rel="stylesheet" href="./style.css" />
+
+    <!-- Динамически подключаем style.css -->
+  <script>
+    const stylePath = location.hostname.includes("github.io") ? "./style.css" : "/docs/style.css";
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = stylePath;
+    document.head.appendChild(link);
+  </script>
+
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 </head>
 <body>
