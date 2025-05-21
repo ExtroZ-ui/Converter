@@ -8,7 +8,7 @@
 ## 🚀 Быстрый старт
 Для работы с сервером:
 1. UI [https://converter-cpgc.onrender.com](https://converter-cpgc.onrender.com)
-2. Swagger [https://extroz-ui.github.io/Converter/swagger_ui.html](https://extroz-ui.github.io/Converter/swagger_ui.html)
+2. Swagger [https://extroz-ui.github.io/Converter/swagger_ui.html](https://extroz-ui.github.io/Converter/swagger_ui.html)  
 Для лакального использования:
 1. Клонируйте репозиторий и переключитесь на ветку `apispec`:
 
