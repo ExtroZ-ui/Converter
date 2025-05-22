@@ -43,38 +43,37 @@ paths:
                 - JPY
                 - GBP
 
-  /convert:
-    post:
+  /currencies/{from}/{to}:
+    get:
       tags:
         - Conversion
       summary: Конвертация суммы между валютами
       description: |
         Выполняет конвертацию указанной суммы из одной валюты в другую по текущему курсу.
-        Необходимо указать валюту источника (`from`), валюту назначения (`to`) и сумму (`amount`).
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - from
-                - to
-                - amount
-              properties:
-                from:
-                  type: string
-                  description: Код валюты источника (например, USD)
-                  example: RUB
-                to:
-                  type: string
-                  description: Код валюты назначения (например, USD)
-                  example: USD
-                amount:
-                  type: number
-                  format: float
-                  description: Сумма для конвертации
-                  example: 100.50
+        Валюты передаются в виде path-параметров (`from`, `to`), сумма — в query (`amount`).
+      parameters:
+        - name: from
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Код валюты источника (например, RUB)
+          example: RUB
+        - name: to
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Код валюты назначения (например, USD)
+          example: USD
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+            format: float
+          description: Сумма для конвертации
+          example: 100.50
       responses:
         '200':
           description: Результат конвертации
@@ -146,7 +145,7 @@ components:
     ConversionResponse:
       type: object
       properties:
-        converted:
+        result:
           type: number
           description: Конвертированная сумма
         from_currency:

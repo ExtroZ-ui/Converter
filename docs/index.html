@@ -142,26 +142,23 @@
 
     <div class="result" id="result" aria-live="polite" aria-atomic="true"></div>
   </div>
-
   <script>
-    document.getElementById("convertBtn").addEventListener("click", () => {
-      const amount = parseFloat(document.getElementById("amount").value);
-      const from = document.getElementById("fromCurrency").value;
-      const to = document.getElementById("toCurrency").value;
-      const resultEl = document.getElementById("result");
+  document.getElementById("convertBtn").addEventListener("click", () => {
+    const amount = parseFloat(document.getElementById("amount").value);
+    const from = document.getElementById("fromCurrency").value;
+    const to = document.getElementById("toCurrency").value;
+    const resultEl = document.getElementById("result");
 
-      if (isNaN(amount) || amount <= 0) {
-        resultEl.textContent = "Введите сумму больше нуля.";
-        return;
-      }
+    if (isNaN(amount) || amount <= 0) {
+      resultEl.textContent = "Введите сумму больше нуля.";
+      return;
+    }
 
-      resultEl.textContent = "Загрузка...";
+    resultEl.textContent = "Загрузка...";
 
-      fetch("/convert", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ from, to, amount })
-      })
+    const url = `/currencies/${from}/${to}?amount=${amount}`;
+
+    fetch(url)
       .then(res => {
         if (!res.ok) throw new Error("Ошибка сервера");
         return res.json();
@@ -170,13 +167,13 @@
         if (data.result !== undefined) {
           resultEl.textContent = `${data.amount} ${data.from} = ${data.result} ${data.to}`;
         } else {
-          resultEl.textContent = "Ошибка: " + data.error;
+          resultEl.textContent = "Ошибка: " + (data.error || "Неизвестная ошибка");
         }
       })
       .catch(() => {
         resultEl.textContent = "Произошла ошибка при соединении с сервером.";
       });
-    });
-  </script>
+  });
+</script>
 </body>
 </html>

@@ -1,15 +1,15 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import os
-from urllib.parse import unquote
-from converter.converter import CurrencyConverter
 import json
+from urllib.parse import unquote, urlparse, parse_qs
+from converter.converter import CurrencyConverter
 
 class SwaggerRequestHandler(BaseHTTPRequestHandler):
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Абсолютный путь к директории с сервером
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
     def _set_cors_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
 
     def do_OPTIONS(self):
@@ -18,7 +18,9 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        path = unquote(self.path)
+        parsed_url = urlparse(unquote(self.path))
+        path = parsed_url.path
+        query = parse_qs(parsed_url.query)
 
         if path == "/":
             self.send_response(200)
@@ -47,6 +49,35 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
             converter = CurrencyConverter()
             currencies = converter.get_currencies()
             self.wfile.write(json.dumps(currencies).encode("utf-8"))
+
+        elif path.startswith("/currencies/"):
+            # Пример пути: /currencies/USD/EUR?amount=100
+            parts = path.strip("/").split("/")
+            if len(parts) == 3:
+                _, from_currency, to_currency = parts
+                try:
+                    amount = float(query.get("amount", [None])[0])
+                    converter = CurrencyConverter()
+                    result = converter.convert(from_currency, to_currency, amount)
+                    response = {
+                        "from": from_currency,
+                        "to": to_currency,
+                        "amount": amount,
+                        "result": round(result, 2)
+                    }
+                    self.send_response(200)
+                    self._set_cors_headers()
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps(response).encode("utf-8"))
+                except Exception as e:
+                    self.send_response(400)
+                    self._set_cors_headers()
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+            else:
+                self.send_error(404, "Invalid currency conversion path.")
 
         elif path == "/favicon.ico":
             file_path = os.path.join(self.BASE_DIR, "docs", "favicon.ico")
@@ -79,57 +110,7 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404, "Not Found")
 
-    def do_POST(self):
-        path = unquote(self.path)
-
-        if path == "/convert":
-            content_length = int(self.headers.get('Content-Length', 0))
-            content_type = self.headers.get('Content-Type', '')
-
-            if content_type != "application/json":
-                self.send_response(400)
-                self._set_cors_headers()
-                self.end_headers()
-                self.wfile.write(b'{"error": "Content-Type must be application/json"}')
-                return
-
-            post_data = self.rfile.read(content_length)
-            try:
-                data = json.loads(post_data)
-                from_currency = data.get("from")
-                to_currency = data.get("to")
-                amount = data.get("amount")
-
-                if not all([from_currency, to_currency, isinstance(amount, (int, float))]):
-                    raise ValueError("Invalid input: 'from', 'to', and numeric 'amount' are required.")
-
-                converter = CurrencyConverter()
-                result = converter.convert(from_currency, to_currency, float(amount))
-
-                response = {
-                    "result": round(result, 2),
-                    "from": from_currency,
-                    "to": to_currency,
-                    "amount": amount
-                }
-
-                self.send_response(200)
-                self._set_cors_headers()
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps(response).encode("utf-8"))
-
-            except Exception as e:
-                self.send_response(400)
-                self._set_cors_headers()
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
-        else:
-            self.send_error(404, "Not Found")
-
     def _serve_file(self, file_path, content_type="text/plain"):
-        """Универсальный метод для отдачи статических файлов."""
         if os.path.exists(file_path) and os.path.isfile(file_path):
             self.send_response(200)
             self._set_cors_headers()
