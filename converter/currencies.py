@@ -1,4 +1,4 @@
-EXCHANGE_RATES = {
+EXCHANGE_CURRENCIES = {
     "USD": 1.0,
     "EUR": 0.93,
     "RUB": 91.0,

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Currency Converter API</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css" />
+
+    <!-- Динамически подключаем style.css -->
+  <script>
+    const stylePath = location.hostname.includes("github.io") ? "./style.css" : "/docs/style.css";
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = stylePath;
+    document.head.appendChild(link);
+  </script>
+
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+<body>
+  <div class="content-wrapper" role="main">
+    <main>
+      <div id="swagger-ui"></div>
+    </main>
+
+    <footer role="contentinfo">
+      &copy; 2025 Currency Converter. Все права защищены.
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js"></script>
+  <script>
+    window.onload = () => {
+      SwaggerUIBundle({
+        url: "https://extroz-ui.github.io/Converter/swagger.yaml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIBundle.SwaggerUIStandalonePreset
+        ],
+        layout: "BaseLayout",
+        docExpansion: "none",
+        defaultModelsExpandDepth: -1
+      });
+    };
+  </script>
+</body>
+</html>
