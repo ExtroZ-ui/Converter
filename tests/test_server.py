@@ -28,26 +28,42 @@ class TestServer(unittest.TestCase):
         self.assertIn("<title>", html)
         conn.close()
 
-    def test_post_convert_valid(self):
+    def test_currency_list(self):
         conn = http.client.HTTPConnection("localhost", 8081)
-        headers = {'Content-Type': 'application/json'}
-        payload = {
-            "from": "USD",
-            "to": "EUR",
-            "amount": 100
-        }
-        conn.request("POST", "/convert", body=json.dumps(payload), headers=headers)
+        conn.request("GET", "/currencies")
+        response = conn.getresponse()
+        self.assertEqual(response.status, 200)
+        data = json.loads(response.read().decode())
+        self.assertIsInstance(data, list)
+        self.assertTrue(len(data) > 0)
+        conn.close()
+
+    def test_valid_conversion(self):
+        conn = http.client.HTTPConnection("localhost", 8081)
+        conn.request("GET", "/currencies/USD/EUR?amount=100")
         response = conn.getresponse()
         self.assertEqual(response.status, 200)
         data = json.loads(response.read().decode())
         self.assertIn("result", data)
+        self.assertEqual(data["from"], "USD")
+        self.assertEqual(data["to"], "EUR")
+        self.assertAlmostEqual(data["amount"], 100)
         conn.close()
 
-    def test_post_convert_invalid_content_type(self):
+    def test_invalid_conversion_path(self):
         conn = http.client.HTTPConnection("localhost", 8081)
-        conn.request("POST", "/convert", body="notjson", headers={'Content-Type': 'text/plain'})
+        conn.request("GET", "/currencies/USD?amount=100")
+        response = conn.getresponse()
+        self.assertEqual(response.status, 404)
+        conn.close()
+
+    def test_invalid_amount(self):
+        conn = http.client.HTTPConnection("localhost", 8081)
+        conn.request("GET", "/currencies/USD/EUR?amount=abc")
         response = conn.getresponse()
         self.assertEqual(response.status, 400)
+        data = json.loads(response.read().decode())
+        self.assertIn("error", data)
         conn.close()
 
     def test_not_found(self):
@@ -59,4 +75,3 @@ class TestServer(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
