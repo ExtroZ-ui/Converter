@@ -19,8 +19,11 @@ class TestServer(unittest.TestCase):
         cls.httpd.server_close()
         cls.thread.join()
 
+    def _get_conn(self):
+        return http.client.HTTPConnection(self.server_address[0], self.server_address[1])
+
     def test_docs_page(self):
-        conn = http.client.HTTPConnection("localhost", 8081)
+        conn = self._get_conn()
         conn.request("GET", "/api-docs")
         response = conn.getresponse()
         self.assertEqual(response.status, 200)
@@ -29,7 +32,7 @@ class TestServer(unittest.TestCase):
         conn.close()
 
     def test_currency_list(self):
-        conn = http.client.HTTPConnection("localhost", 8081)
+        conn = self._get_conn()
         conn.request("GET", "/currencies")
         response = conn.getresponse()
         self.assertEqual(response.status, 200)
@@ -39,7 +42,7 @@ class TestServer(unittest.TestCase):
         conn.close()
 
     def test_valid_conversion(self):
-        conn = http.client.HTTPConnection("localhost", 8081)
+        conn = self._get_conn()
         conn.request("GET", "/currencies/USD/EUR?amount=100")
         response = conn.getresponse()
         self.assertEqual(response.status, 200)
@@ -51,14 +54,14 @@ class TestServer(unittest.TestCase):
         conn.close()
 
     def test_invalid_conversion_path(self):
-        conn = http.client.HTTPConnection("localhost", 8081)
+        conn = self._get_conn()
         conn.request("GET", "/currencies/USD?amount=100")
         response = conn.getresponse()
         self.assertEqual(response.status, 404)
         conn.close()
 
     def test_invalid_amount(self):
-        conn = http.client.HTTPConnection("localhost", 8081)
+        conn = self._get_conn()
         conn.request("GET", "/currencies/USD/EUR?amount=abc")
         response = conn.getresponse()
         self.assertEqual(response.status, 400)
@@ -67,10 +70,23 @@ class TestServer(unittest.TestCase):
         conn.close()
 
     def test_not_found(self):
-        conn = http.client.HTTPConnection("localhost", 8081)
+        conn = self._get_conn()
         conn.request("GET", "/invalid")
         response = conn.getresponse()
         self.assertEqual(response.status, 404)
+        conn.close()
+
+    def test_available_dates(self):
+        conn = self._get_conn()
+        conn.request("GET", "/available-dates")
+        response = conn.getresponse()
+        self.assertEqual(response.status, 200)
+        data = json.loads(response.read().decode())
+        self.assertIsInstance(data, list)
+        # Даты должны быть строками в формате YYYY-MM-DD
+        for d in data:
+            self.assertIsInstance(d, str)
+            self.assertRegex(d, r"\d{4}-\d{2}-\d{2}")
         conn.close()
 
 if __name__ == '__main__':

@@ -46,8 +46,8 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
             self._set_cors_headers()
             self.send_header("Content-Type", "application/json")
             self.end_headers()
-            converter = CurrencyConverter()
-            currencies = converter.get_currencies()
+            with CurrencyConverter() as converter:
+                currencies = converter.get_currencies()
             self.wfile.write(json.dumps(currencies).encode("utf-8"))
 
         elif path.startswith("/currencies/"):
@@ -59,9 +59,9 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
                     if amount_str is None:
                         raise ValueError("Параметр amount обязателен")
                     amount = float(amount_str)
-                    date = query.get("date", [None])[0]  # Опциональный параметр даты
-                    converter = CurrencyConverter()
-                    result = converter.convert(from_currency, to_currency, amount, date)
+                    date = query.get("date", [None])[0]
+                    with CurrencyConverter() as converter:
+                        result = converter.convert(from_currency, to_currency, amount, date)
                     response = {
                         "from": from_currency,
                         "to": to_currency,
@@ -85,11 +85,10 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
             else:
                 self.send_error(404, "Invalid currency conversion path.")
 
-        # --- Новый эндпоинт для получения доступных дат ---
         elif path == "/available-dates":
             try:
-                converter = CurrencyConverter()
-                dates = converter.get_available_dates()  # список дат в формате ["2023-05-01", "2023-05-02", ...]
+                with CurrencyConverter() as converter:
+                    dates = converter.get_available_dates()
                 self.send_response(200)
                 self._set_cors_headers()
                 self.send_header("Content-Type", "application/json")

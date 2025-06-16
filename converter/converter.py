@@ -1,12 +1,20 @@
 from pymongo import MongoClient
 from datetime import datetime
 
-
 class CurrencyConverter:
     def __init__(self):
         self.client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=5000)
         self.db = self.client["currency_db"]
         self.collection = self.db["rates"]
+
+    def close(self):
+        self.client.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
 
     def _get_rates_by_date(self, date_str: str):
         try:
@@ -36,7 +44,7 @@ class CurrencyConverter:
         if to_currency not in rates:
             raise ValueError(f"Неподдерживаемый код валюты: {to_currency}")
 
-        usd_amount = amount / rates[from_currency]  # Конвертируем
+        usd_amount = amount / rates[from_currency]  # Конвертируем в USD
         return usd_amount * rates[to_currency]
 
     def get_currencies(self):
