@@ -4,18 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Currency Converter API</title>
+
+  <!-- Swagger UI стили -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css" />
 
-    <!-- Динамически подключаем style.css -->
+  <!-- Динамически подключаем кастомный style.css -->
   <script>
-    const stylePath = location.hostname.includes("github.io") ? "./style.css" : "/docs/style.css";
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = stylePath;
-    document.head.appendChild(link);
+    (function() {
+      const stylePath = location.hostname.includes("github.io") ? "./style.css" : "/docs/style.css";
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = stylePath;
+      document.head.appendChild(link);
+    })();
   </script>
 
-  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <!-- favicon -->
+  <link rel="icon" href="/docs/favicon.ico" type="image/x-icon" />
 </head>
 <body>
   <div class="content-wrapper" role="main">
@@ -23,14 +28,15 @@
       <div id="swagger-ui"></div>
     </main>
 
-    <footer role="contentinfo">
+    <footer role="contentinfo" style="text-align: center; margin-top: 2em; font-size: 0.9em; color: #666;">
       &copy; 2025 Currency Converter. Все права защищены.
     </footer>
   </div>
 
+  <!-- Swagger UI -->
   <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js"></script>
   <script>
-    window.onload = () => {
+    window.onload = function () {
       SwaggerUIBundle({
         url: "https://extroz-ui.github.io/Converter/swagger.yaml",
         dom_id: '#swagger-ui',

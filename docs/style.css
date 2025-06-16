@@ -1,109 +1,166 @@
 /* Сброс и базовые стили */
-    * {
-      box-sizing: border-box;
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #71b7e6, #9b59b6);
-      color: #333;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      min-height: 100vh;
-    }
+* {
+  box-sizing: border-box;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+}
 
-    /* Общий контейнер для контента */
-    .content-wrapper {
-      width: 100%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+/* Общий контейнер для контента */
+.content-wrapper {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  padding: 30px 40px;
+}
 
-    header, main, footer {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-      padding: 30px 40px;
-      box-sizing: border-box;
-    }
+/* Заголовки и разделы */
+header, main, footer {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  padding: 30px 40px;
+  box-sizing: border-box;
+  transition: box-shadow 0.3s ease;
+}
+header:hover, main:hover, footer:hover {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
 
-    header {
-      text-align: center;
-      user-select: none;
-    }
-    header h1 {
-      margin: 0 0 12px 0;
-      font-weight: 700;
-      font-size: 2.4rem;
-      color: #4a4a4a;
-      letter-spacing: 1px;
-    }
-    header p {
-      margin: 0;
-      font-size: 1.1rem;
-      color: #666;
-      line-height: 1.4;
-    }
+header {
+  text-align: center;
+  user-select: none;
+}
+header h1 {
+  margin: 0 0 14px 0;
+  font-weight: 800;
+  font-size: 2.8rem;
+  color: #3a3a3a;
+  letter-spacing: 1.2px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+header p {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #555;
+  line-height: 1.5;
+  font-weight: 500;
+}
 
-    main {
-      min-height: 600px;
-    }
+main {
+  min-height: 600px;
+}
 
-    #swagger-ui {
-      width: 100%;
-    }
+#swagger-ui {
+  width: 100%;
+  font-size: 1rem;
+}
 
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-      user-select: none;
-    }
+/* Подвал */
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+  user-select: none;
+  font-weight: 400;
+}
 
-    /* Кастомизация кнопок и методов Swagger */
-    .swagger-ui .opblock-summary-method {
-      background-color: #6c63ff !important;
-      color: white !important;
-      font-weight: 600;
-      border-radius: 6px;
-      text-transform: uppercase;
-    }
-    .swagger-ui .btn.try-out__btn {
-      background-color: #6c63ff !important;
-      border-color: #6c63ff !important;
-      color: white !important;
-      font-weight: 600;
-      border-radius: 8px;
-      padding: 6px 16px;
-      transition: background-color 0.3s ease;
-    }
-    .swagger-ui .btn.try-out__btn:hover {
-      background-color: #574fd6 !important;
-      border-color: #574fd6 !important;
-    }
-    .swagger-ui h2, .swagger-ui h3 {
-      color: #4a4a4a;
-      font-weight: 700;
-    }
+/* Кастомизация кнопок и методов Swagger */
+.swagger-ui .opblock-summary-method {
+  background-color: #6c63ff !important;
+  color: white !important;
+  font-weight: 700;
+  border-radius: 8px;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  letter-spacing: 0.08em;
+  box-shadow: 0 2px 6px rgba(108, 99, 255, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.swagger-ui .opblock-summary-method:hover {
+  background-color: #574fd6 !important;
+  box-shadow: 0 4px 12px rgba(87, 79, 214, 0.6);
+}
 
-    /* Адаптив */
-    @media (max-width: 600px) {
-      header, main, footer {
-        padding: 20px 25px;
-      }
-      header h1 {
-        font-size: 1.8rem;
-      }
-      header p {
-        font-size: 1rem;
-      }
-    }
+.swagger-ui .btn.try-out__btn {
+  background-color: #6c63ff !important;
+  border-color: #6c63ff !important;
+  color: white !important;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(108, 99, 255, 0.4);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+.swagger-ui .btn.try-out__btn:hover {
+  background-color: #574fd6 !important;
+  border-color: #574fd6 !important;
+  box-shadow: 0 8px 20px rgba(87, 79, 214, 0.6);
+}
+
+/* Заголовки внутри Swagger */
+.swagger-ui h2,
+.swagger-ui h3 {
+  color: #3a3a3a;
+  font-weight: 700;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+
+/* Улучшенный фокус для инпутов */
+.swagger-ui input[type="text"],
+.swagger-ui select,
+.swagger-ui textarea {
+  border-radius: 8px !important;
+  border: 2px solid #ddd !important;
+  padding: 8px 12px !important;
+  font-size: 1rem !important;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+}
+.swagger-ui input[type="text"]:focus,
+.swagger-ui select:focus,
+.swagger-ui textarea:focus {
+  border-color: #6c63ff !important;
+  box-shadow: 0 0 8px rgba(108, 99, 255, 0.6) !important;
+  outline: none !important;
+}
+
+/* Адаптив */
+@media (max-width: 600px) {
+  .content-wrapper {
+    padding: 20px 25px;
+    max-width: 100%;
+  }
+  header, main, footer {
+    padding: 20px 25px;
+  }
+  header h1 {
+    font-size: 2rem;
+  }
+  header p {
+    font-size: 1rem;
+  }
+  .swagger-ui .btn.try-out__btn {
+    padding: 6px 14px;
+    font-size: 0.9rem;
+  }
+}

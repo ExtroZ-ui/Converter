@@ -51,19 +51,23 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(json.dumps(currencies).encode("utf-8"))
 
         elif path.startswith("/currencies/"):
-            # Пример пути: /currencies/USD/EUR?amount=100
             parts = path.strip("/").split("/")
             if len(parts) == 3:
                 _, from_currency, to_currency = parts
                 try:
-                    amount = float(query.get("amount", [None])[0])
+                    amount_str = query.get("amount", [None])[0]
+                    if amount_str is None:
+                        raise ValueError("Параметр amount обязателен")
+                    amount = float(amount_str)
+                    date = query.get("date", [None])[0]  # Опциональный параметр даты
                     converter = CurrencyConverter()
-                    result = converter.convert(from_currency, to_currency, amount)
+                    result = converter.convert(from_currency, to_currency, amount, date)
                     response = {
                         "from": from_currency,
                         "to": to_currency,
                         "amount": amount,
-                        "result": round(result, 2)
+                        "result": round(result, 2),
+                        "date": date or "latest"
                     }
                     self.send_response(200)
                     self._set_cors_headers()
@@ -71,13 +75,34 @@ class SwaggerRequestHandler(BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(json.dumps(response).encode("utf-8"))
                 except Exception as e:
+                    print(f"Ошибка при обработке запроса /currencies/: {e}")
                     self.send_response(400)
                     self._set_cors_headers()
                     self.send_header("Content-Type", "application/json")
                     self.end_headers()
-                    self.wfile.write(json.dumps({"error": str(e)}).encode("utf-8"))
+                    error_msg = {"error": f"Ошибка: {str(e)}. Проверьте корректность параметров, возможно отсутствуют данные по дате."}
+                    self.wfile.write(json.dumps(error_msg).encode("utf-8"))
             else:
                 self.send_error(404, "Invalid currency conversion path.")
+
+        # --- Новый эндпоинт для получения доступных дат ---
+        elif path == "/available-dates":
+            try:
+                converter = CurrencyConverter()
+                dates = converter.get_available_dates()  # список дат в формате ["2023-05-01", "2023-05-02", ...]
+                self.send_response(200)
+                self._set_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(json.dumps(dates).encode("utf-8"))
+            except Exception as e:
+                print(f"Ошибка при обработке запроса /available-dates: {e}")
+                self.send_response(500)
+                self._set_cors_headers()
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                error_msg = {"error": "Внутренняя ошибка сервера при получении доступных дат."}
+                self.wfile.write(json.dumps(error_msg).encode("utf-8"))
 
         elif path == "/favicon.ico":
             file_path = os.path.join(self.BASE_DIR, "docs", "favicon.ico")

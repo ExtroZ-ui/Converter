@@ -3,16 +3,16 @@ info:
   title: Currency Converter API
   version: 1.0.0
   description: |
-    API для конвертации валют. Позволяет получить список поддерживаемых валют и выполнить конвертацию суммы из одной валюты в другую.
+    API для конвертации валют. Позволяет получить список поддерживаемых валют, выполнить конвертацию суммы из одной валюты в другую, а также получить список доступных дат.
   contact:
     name: GitHub Currency Converter
     url: https://github.com/ExtroZ-ui/Converter/tree/master
 
 servers:
   - url: http://localhost:8000
-    description: Локальный
+    description: Локальный сервер
   - url: https://converter-cpgc.onrender.com
-    description: Временный
+    description: Временный сервер
 
 tags:
   - name: Currencies
@@ -49,8 +49,8 @@ paths:
         - Conversion
       summary: Конвертация суммы между валютами
       description: |
-        Выполняет конвертацию указанной суммы из одной валюты в другую по текущему курсу.
-        Валюты передаются в виде path-параметров (`from`, `to`), сумма — в query (`amount`).
+        Выполняет конвертацию указанной суммы из одной валюты в другую.
+        Валюты передаются в виде path-параметров (`from`, `to`), сумма — в query (`amount`), дата — опционально.
       parameters:
         - name: from
           in: path
@@ -74,6 +74,15 @@ paths:
             format: float
           description: Сумма для конвертации
           example: 100.50
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+          description: Дата курса в формате YYYY-MM-DD (если не указана, используется последний)
+          example: "2024-01-15"
+
       responses:
         '200':
           description: Результат конвертации
@@ -82,10 +91,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  result:
-                    type: number
-                    description: Конвертированная сумма
-                    example: 1.1
                   from:
                     type: string
                     description: Валюта источника
@@ -98,6 +103,15 @@ paths:
                     type: number
                     description: Исходная сумма
                     example: 100.5
+                  result:
+                    type: number
+                    description: Конвертированная сумма
+                    example: 1.1
+                  date:
+                    type: string
+                    format: date
+                    description: Использованная дата курса
+                    example: "2024-01-15"
         '400':
           description: Ошибка в параметрах запроса
           content:
@@ -119,34 +133,33 @@ paths:
                     type: string
                     example: "Ошибка на сервере"
 
-components:
-  schemas:
-    CurrencyList:
-      type: array
-      items:
-        type: string
-    ConversionRequest:
-      type: object
-      required:
-        - from_currency
-        - to_currency
-        - amount
-      properties:
-        from_currency:
-          type: string
-          description: Код валюты источника
-        to_currency:
-          type: string
-          description: Код валюты назначения
-        amount:
-          type: number
-          format: float
-          description: Сумма для конвертации
-    ConversionResponse:
-      type: object
-      properties:
-        result:
-          type: number
-          description: Конвертированная сумма
-        from_currency:
-          type
+  /available-dates:
+    get:
+      tags:
+        - Currencies
+      summary: Получить список доступных дат курсов валют
+      description: Возвращает массив дат, для которых доступны валютные курсы.
+      responses:
+        '200':
+          description: Успешный ответ с массивом дат
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: date
+              example:
+                - "2024-01-01"
+                - "2024-01-02"
+                - "2024-01-03"
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Внутренняя ошибка сервера при получении доступных дат."
