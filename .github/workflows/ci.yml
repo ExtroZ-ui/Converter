@@ -15,7 +15,7 @@ jobs:
       mongo:
         image: mongo:latest
         ports:
-          - 27017:27017
+          - localhost:27017
     steps:
     - name: 📥 Checkout repo
       uses: actions/checkout@v4
