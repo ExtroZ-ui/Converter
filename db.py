@@ -31,7 +31,7 @@ def apply_daily_variation(base_rates, day_index):
     return new_rates
 
 try:
-    client = MongoClient("mongodb://localhost:27017/", serverSelectionTimeoutMS=5000)
+    client = MongoClient("mongodb://127.0.0.1:27017/", serverSelectionTimeoutMS=5000)
     client.server_info()
 
     db = client["currency_db"]
