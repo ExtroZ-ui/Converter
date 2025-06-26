@@ -89,5 +89,53 @@ class TestServer(unittest.TestCase):
             self.assertRegex(d, r"\d{4}-\d{2}-\d{2}")
         conn.close()
 
+    def test_root_page(self):
+        conn = self._get_conn()
+        conn.request("GET", "/")
+        response = conn.getresponse()
+        self.assertEqual(response.status, 200)
+        self.assertIn(b"<html", response.read().lower())
+        conn.close()
+
+    def test_options_request(self):
+        conn = self._get_conn()
+        conn.request("OPTIONS", "/")
+        response = conn.getresponse()
+        self.assertEqual(response.status, 200)
+        self.assertIn("Access-Control-Allow-Origin", response.getheaders()[0][0])
+        conn.close()
+
+    def test_missing_amount_param(self):
+        conn = self._get_conn()
+        conn.request("GET", "/currencies/USD/EUR")  # нет ?amount=
+        response = conn.getresponse()
+        self.assertEqual(response.status, 400)
+        data = json.loads(response.read().decode())
+        self.assertIn("error", data)
+        conn.close()
+
+    def test_invalid_static_file_type(self):
+        conn = self._get_conn()
+        conn.request("GET", "/docs/invalid.xyz")
+        response = conn.getresponse()
+        self.assertEqual(response.status, 415)
+        conn.close()
+
+    def test_missing_static_file(self):
+        conn = self._get_conn()
+        conn.request("GET", "/docs/missing.html")
+        response = conn.getresponse()
+        self.assertEqual(response.status, 404)
+        conn.close()
+
+    def test_favicon(self):
+        conn = self._get_conn()
+        conn.request("GET", "/favicon.ico")
+        response = conn.getresponse()
+        # статус может быть 200 или 404 — зависит, есть ли файл
+        self.assertIn(response.status, [200, 404])
+        conn.close()
+
+
 if __name__ == '__main__':
     unittest.main()
