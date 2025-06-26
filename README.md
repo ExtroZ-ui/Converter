@@ -127,7 +127,6 @@ servers:
   ```
 coverage run -m unittest discover -s tests
 coverage report
-coverage report
 coverage html
   ```
 
