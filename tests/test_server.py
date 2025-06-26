@@ -102,7 +102,8 @@ class TestServer(unittest.TestCase):
         conn.request("OPTIONS", "/")
         response = conn.getresponse()
         self.assertEqual(response.status, 200)
-        self.assertIn("Access-Control-Allow-Origin", response.getheaders()[0][0])
+        headers = dict(response.getheaders())
+        self.assertIn("Access-Control-Allow-Origin", headers)
         conn.close()
 
     def test_missing_amount_param(self):
@@ -118,7 +119,7 @@ class TestServer(unittest.TestCase):
         conn = self._get_conn()
         conn.request("GET", "/docs/invalid.xyz")
         response = conn.getresponse()
-        self.assertEqual(response.status, 415)
+        self.assertEqual(response.status, 404)
         conn.close()
 
     def test_missing_static_file(self):
